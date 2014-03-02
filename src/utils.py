@@ -7,6 +7,12 @@ import numpy as np
 
 
 def generate_hypergraph(n=6, number_of_edges=None, k=3):
+    """Generate hypergraph wiht constant cardinality of edges.
+
+    :n - number of nodes,
+    :number_of_edges - how many hyper edges will be created,
+    :k - cardinality of hyper edges.
+    """
     vertices = range(1, n + 1)
 
     if number_of_edges is None:
@@ -60,3 +66,4 @@ def show_different_hipergraphs(n=10, k=3, parts=10):
         plt.figure(figsize=(6, 6))
         nx.draw(hyper_G, node_color=p.values(), node_size=3000, cmap=plt.cm.Blues, alpha=0.6)
 
+print("Hello!")
