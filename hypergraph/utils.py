@@ -33,7 +33,7 @@ def convert_to_nx_bipartite_graph(vertices, hyper_edges):
 
 
 def draw_bipartite_graph(G, group_1, group_2):
-    pos = {x:(0 , float(i % 20) * 2) for i, x in enumerate(group_1)}
+    pos = {x: (0, float(i % 20) * 2) for i, x in enumerate(group_1)}
     pos.update({node: (18.3, 0 + float(i % 20) * 2) for i,
                 node in enumerate(group_2)})
 
@@ -65,7 +65,7 @@ def show_different_hipergraphs(n=10, k=3, parts=10):
         draw_bipartite_graph(G, *hipergraph_to_bipartite_parts(G))
         hyper_G = convert_to_custom_hyper_G(*g)
 
-        p=nx.degree(hyper_G)
+        p = nx.degree(hyper_G)
 
         plt.figure(figsize=(6, 6))
         nx.draw(hyper_G, node_color=p.values(),
