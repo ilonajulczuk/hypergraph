@@ -1,4 +1,4 @@
-import netwokx as nx
+import networkx as nx
 import itertools
 
 
