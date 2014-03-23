@@ -1,4 +1,5 @@
 import networkx as nx
+from matplotlib import pyplot as plt
 
 
 def draw_bipartite_graph(G, group_1, group_2):
@@ -6,6 +7,7 @@ def draw_bipartite_graph(G, group_1, group_2):
     pos.update({node: (18.3, 0 + float(i % 20) * 2) for i,
                 node in enumerate(group_2)})
 
+    plt.figure()
     nx.draw(G, pos, node_color='m', node_size=800,
             with_labels=True, width=1.3, alpha=0.4)
 
