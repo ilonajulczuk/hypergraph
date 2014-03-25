@@ -8,7 +8,8 @@ and [networkx](http://networkx.github.io/)
 
 IPython has a powerful notebook which is amazing for sharing code
 and insights and interactive development.
-Links to notebooks:
+
+##Links to notebooks:
 
 ###How can we represent hypergraphs in code?
 A very good representation is bipartite graph of nodes and hyperedges.
