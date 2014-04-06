@@ -1,20 +1,24 @@
 import numpy as np
-import networkx as nx
 from collections import Counter
 from matplotlib import pyplot as plt
 from numpy.random import random_sample
-from hypergraph.generators import generate_uniform_hypergraph
-from hypergraph import converters
-from hypergraph import utils
+from generators import uniform_hypergraph
+import converters
+import utils
 
 
-def create_markov_matrix(edges):
+def create_markov_matrix(edges, count_itself=False):
     a_matrix = np.zeros((len(edges), len(edges)))
 
     for i, edge_1 in enumerate(edges):
+        not_in_other_edges = set(edge_1)
         for j, edge_2 in enumerate(edges):
             if i != j:
                 a_matrix[i][j] = len(set(edge_1) & set(edge_2))
+                not_in_other_edges -= set(edge_2)
+
+        if count_itself:
+            a_matrix[i][i] = len(not_in_other_edges)
 
     for i, edge_1 in enumerate(edges):
         a_matrix[i] = a_matrix[i] / float(sum(a_matrix[i]))
@@ -58,74 +62,59 @@ def count_nodes(nodes, edges, occurences):
             c[node] = 0
     return c
 
-def plot_nodes_frequencies(most_common_nodes, title):
-    plt.figure()
-    plt.bar(list(most_common_nodes.keys()),
-             list(most_common_nodes.values()),
-             alpha=0.7, color='magenta')
 
-    plt.title(title)
-    plt.show()
-
-
-def plot_different_representations(nodes, hyperedges):
-    print("Drawing different representations of hypergraph")
-
-    print("Bipartite graph")
-    nx_bipartite = converters.convert_to_nx_bipartite_graph(nodes, hyperedges)
-    utils.draw_bipartite_graph(nx_bipartite, *utils.hypergraph_to_bipartite_parts(nx_bipartite))
-
-    print("Graph of hypereges as nodes")
-    custom_hyper_g = converters.convert_to_custom_hyper_G(nodes, hyperedges)
-    plt.figure()
-    nx.draw(custom_hyper_g)
-
-    print("Clique graph")
-    clique_graph = converters.convert_to_clique_graph(nodes, hyperedges)
-    plt.figure()
-    nx.draw(clique_graph)
-
-
-def plot_hyperedges_frequencies(most_common, hyperedges, title):
-    plt.figure(figsize=(12, 6))
-    hyperedges_indexes, occurences = zip(*most_common)
-    plt.bar(hyperedges_indexes, occurences)
-    plt.title(title)
-    plt.xticks(range(len(hyperedges)), hyperedges)
-
-
-def compare_hypergraph_with_cliques(number_of_nodes, cardinality, fraction, t_max):
-    g = generate_uniform_hypergraph(
+def compare_hypergraph_with_cliques(number_of_nodes,
+                                    cardinality, fraction, t_max,
+                                    plot_representations=False):
+    HG = uniform_hypergraph(
         n=number_of_nodes,
         k=cardinality,
         number_of_edges=int(
             number_of_nodes *
             fraction))
 
-    nodes, hyperedges = g
+    nodes = HG.nodes()
+    hyperedges = HG.hyper_edges()
 
-    plot_different_representations(nodes, hyperedges)
+    all_nodes = []
+    for hyperedge in hyperedges:
+        all_nodes += hyperedge
+    c = Counter(all_nodes)
+    xs, ys = zip(*c.items())
+    #plt.bar(xs, ys)
+
+    if plot_representations:
+        utils.plot_different_representations(nodes, hyperedges)
+
     markov_matrix = create_markov_matrix(hyperedges)
+    print(markov_matrix)
     current_state = 1
     most_common, states = simulate(current_state, markov_matrix, t_max)
 
-    plot_hyperedges_frequencies(most_common, hyperedges,
+    plt.figure(figsize=(12, 10))
+    utils.plot_hyperedges_frequencies(most_common, hyperedges,
                                 'Ocurrences of hyperedges in a hypergraph')
 
     most_common_nodes = count_nodes(nodes, hyperedges, most_common)
 
-    plot_nodes_frequencies(most_common_nodes, 'Nodes in a hypergraph')
+    plt.figure(figsize=(12, 10))
+    utils.plot_nodes_frequencies(most_common_nodes, 'Nodes in a hypergraph')
 
     clique_graph = converters.convert_to_clique_graph(nodes, hyperedges)
     clique_markov_matrix = create_markov_matrix(clique_graph.edges())
+
+    print("clique markov matrix")
+    print(clique_markov_matrix)
     most_common, states = simulate(current_state, clique_markov_matrix, t_max)
 
-    plot_hyperedges_frequencies(most_common, clique_graph.edges(),
+    plt.figure(figsize=(12, 10))
+    utils.plot_hyperedges_frequencies(most_common, clique_graph.edges(),
                                 'Ocurrences of edges in a graph')
 
     most_common_nodes = count_nodes(clique_graph.nodes(), clique_graph.edges(),
                                     most_common)
-    plot_nodes_frequencies(most_common_nodes, 'Nodes in a graph')
+    plt.figure(figsize=(12, 10))
+    utils.plot_nodes_frequencies(most_common_nodes, 'Nodes in a graph')
 
 
 def demo():

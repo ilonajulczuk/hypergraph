@@ -1,4 +1,6 @@
 import networkx as nx
+import numpy as np
+import converters
 from matplotlib import pyplot as plt
 
 
@@ -27,4 +29,46 @@ def hypergraph_to_bipartite_parts(G):
     return group_1, group_2
 
 
+def plot_different_representations(nodes, hyperedges):
+    print("Drawing different representations of hypergraph")
 
+    print("Bipartite graph")
+    nx_bipartite = converters.convert_to_nx_bipartite_graph(nodes, hyperedges)
+    draw_bipartite_graph(nx_bipartite,
+                               *hypergraph_to_bipartite_parts(nx_bipartite))
+
+    print("Graph of hypereges as nodes")
+    custom_hyper_g = converters.convert_to_custom_hyper_G(nodes, hyperedges)
+    plt.figure()
+    nx.draw(custom_hyper_g)
+
+    print("Clique graph")
+
+    clique_graph = converters.convert_to_clique_graph(nodes, hyperedges)
+    plt.figure()
+    nx.draw(clique_graph)
+
+
+def plot_hyperedges_frequencies(most_common, hyperedges, title, normed=True):
+    hyperedges_indexes, occurrences = zip(*most_common)
+    if normed:
+        occurrences /= np.sum(occurrences)
+    plt.bar(hyperedges_indexes, occurrences)
+    plt.title(title)
+    plt.xticks(range(len(hyperedges)), hyperedges)
+
+
+def plot_nodes_frequencies(most_common_nodes, title, normed=True):
+    names_of_nodes = list(most_common_nodes.keys())
+    node_occurrences = list(most_common_nodes.values())
+
+    if normed:
+        all_occurrences = sum(node_occurrences)
+        node_occurrences = [float(oc) / all_occurrences for oc in node_occurrences]
+
+    plt.bar(names_of_nodes,
+            node_occurrences,
+            alpha=0.7, color='magenta')
+
+    plt.title(title)
+    plt.show()

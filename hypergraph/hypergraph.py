@@ -3,8 +3,7 @@ import networkx as nx
 
 
 class HyperGraph(nx.Graph):
-
-    """Docstring for HyperGraph. """
+    """HyperGraph representing hypergraph. """
 
     def __init__(self, *args, **kwargs):
         """@todo: to be defined1. """
