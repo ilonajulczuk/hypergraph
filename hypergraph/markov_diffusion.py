@@ -33,24 +33,42 @@ def weighted_values(values, probabilities, size):
     return R[0]
 
 
-def step_diffusion(current_state, markov_matrix):
-    values_size = len(markov_matrix)
-    values = range(values_size)
-    probs = markov_matrix[current_state]
-    next_state = weighted_values(values, probs, 1)
-    return next_state
+class RandomNextStep():
+    def __init__(self, values, probabilities):
+        self.prob_density = stats.rv_discrete(name='discrete', values=(values, probabilities))
+
+    def __call__(self):
+        return self.prob_density.rvs(size=1)[0]
+
+    def __str__(self):
+        return """Next step random variable"""
 
 
-def simulate(current_state, markov_matrix, t_max):
-    c = Counter()
-    states = []
-    for _ in range(t_max):
-        current_state = step_diffusion(current_state, markov_matrix)
-        visited_hyperedge = current_state
-        c[visited_hyperedge] += 1
-        states.append(visited_hyperedge)
-    return c.most_common(), states
+class DiffusionEngine():
+    def __init__(self, markov_matrix):
+        self.markov_matrix = markov_matrix
+        available_steps = range(len(markov_matrix))
+        self.next_steps = {i: RandomNextStep(available_steps,
+                                             row) for i, row
+                                             in enumerate(markov_matrix[:])}
 
+    def step(self, current_state):
+        next_state = self.next_steps[current_state]()
+        return next_state
+
+    def simulate(self, current_state, t_max):
+        # TODO add multiwalker support
+        c = Counter()
+        states = []
+        for _ in range(t_max):
+            current_state = self.step(current_state)
+            visited_hyperedge = current_state
+            c[visited_hyperedge] += 1
+            states.append(visited_hyperedge)
+        return c.most_common(), states
+
+    def __str__(self):
+        return """DiffusionEngine with transition matrix: %s""" % self.markov_matrix
 
 def count_nodes(nodes, edges, occurences):
     c = Counter()
@@ -61,6 +79,7 @@ def count_nodes(nodes, edges, occurences):
         if node not in c:
             c[node] = 0
     return c
+
 
 
 def compare_hypergraph_with_cliques(number_of_nodes,
@@ -89,7 +108,8 @@ def compare_hypergraph_with_cliques(number_of_nodes,
     markov_matrix = create_markov_matrix(hyperedges)
     print(markov_matrix)
     current_state = 1
-    most_common, states = simulate(current_state, markov_matrix, t_max)
+    engine = DiffusionEngine(markov_matrix)
+    most_common, states = engine.simulate(current_state, t_max)
 
     plt.figure(figsize=(12, 10))
     utils.plot_hyperedges_frequencies(most_common, hyperedges,
@@ -105,7 +125,10 @@ def compare_hypergraph_with_cliques(number_of_nodes,
 
     print("clique markov matrix")
     print(clique_markov_matrix)
-    most_common, states = simulate(current_state, clique_markov_matrix, t_max)
+
+
+    engine = DiffusionEngine(markov_matrix)
+    most_common, states = engine.simulate(current_state, t_max)
 
     plt.figure(figsize=(12, 10))
     utils.plot_hyperedges_frequencies(most_common, clique_graph.edges(),
