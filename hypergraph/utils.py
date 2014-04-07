@@ -58,15 +58,20 @@ def plot_hyperedges_frequencies(most_common, hyperedges, title, normed=True):
     plt.xticks(range(len(hyperedges)), hyperedges)
 
 
-def plot_nodes_frequencies(most_common_nodes, title, normed=True):
+def get_names_and_occurrences(most_common_nodes, normed=True):
     names_of_nodes = list(most_common_nodes.keys())
     node_occurrences = list(most_common_nodes.values())
 
     if normed:
         all_occurrences = sum(node_occurrences)
         node_occurrences = [float(oc) / all_occurrences for oc in node_occurrences]
+    return names_of_nodes, node_occurrences
 
-    plt.bar(names_of_nodes,
+
+def plot_nodes_frequencies(most_common_nodes, title, normed=True):
+    names, node_occurrences = get_names_and_occurrences(most_common_nodes,
+                                                        normed)
+    plt.bar(names,
             node_occurrences,
             alpha=0.7, color='magenta')
 
