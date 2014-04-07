@@ -1,7 +1,8 @@
 import numpy as np
+from scipy import stats
+
 from collections import Counter
 from matplotlib import pyplot as plt
-from numpy.random import random_sample
 from generators import uniform_hypergraph
 import converters
 import utils
@@ -27,10 +28,9 @@ def create_markov_matrix(edges, count_itself=False):
 
 
 def weighted_values(values, probabilities, size):
-    bins = np.add.accumulate(probabilities)
-    bins[-1] = max(1, bins[-1])
-    index = np.digitize(random_sample(size), bins)
-    return values[index]
+    custm = stats.rv_discrete(name='custm', values=(values, probabilities))
+    R = custm.rvs(size=1)
+    return R[0]
 
 
 def step_diffusion(current_state, markov_matrix):

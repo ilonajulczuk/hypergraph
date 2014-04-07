@@ -72,3 +72,4 @@ def plot_nodes_frequencies(most_common_nodes, title, normed=True):
 
     plt.title(title)
     plt.show()
+    return node_occurrences
