@@ -138,9 +138,9 @@ def compare_to_theory(experimental, theoretical_1, theoretical_2):
 
 
 def comparing_pipeline(t_max=10000):
-    for n in range(5, 6, 5):
-        for k in range(3, 4):
-            for f in range(80, 81, 10):
+    for n in range(10, 31, 5):
+        for k in range(3, 6):
+            for f in range(60, 91, 10):
                 f = float(f) / 100
                 # number_of_nodes, cardinality, fraction_of_hyperedges
                 print(n, k, f)
@@ -150,6 +150,8 @@ def comparing_pipeline(t_max=10000):
                 markov_matrix_with_itself = create_markov_matrix(HG.hyper_edges(), count_itself=True)
                 markov_matrix = create_markov_matrix(HG.hyper_edges(), count_itself=False)
 
+                print(markov_matrix)
+                print(markov_matrix_with_itself)
                 simulated_n_o_n = simulate_diffusion(HG, markov_matrix, t_max, plot_results=False)
                 simulated_n_o_n_i = simulate_diffusion(HG, markov_matrix_with_itself, t_max)
 
@@ -184,7 +186,7 @@ def comparing_pipeline(t_max=10000):
                             label='Analytical diffusion model on clique', color="#dcab11")
 
                 plt.legend(loc=0)
-                plt.savefig("diffusion.png")
+                plt.savefig("diffusion_%s_%s_%s.png" % (n, k, f))
             plt.show()
 
 
