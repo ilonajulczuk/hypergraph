@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+py3
+.ipynb_checkpoints
+tags
