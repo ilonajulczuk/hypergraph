@@ -2,6 +2,18 @@ import networkx as nx
 import numpy as np
 import converters
 from matplotlib import pyplot as plt
+from generators import uniform_hypergraph
+
+
+def create_graph(number_of_nodes, cardinality, fraction_of_hyperedges):
+    HG = uniform_hypergraph(
+        n=number_of_nodes,
+        k=cardinality,
+        number_of_edges=int(
+            number_of_nodes *
+            fraction_of_hyperedges))
+
+    return HG
 
 
 def draw_bipartite_graph(G, group_1, group_2):

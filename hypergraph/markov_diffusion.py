@@ -38,7 +38,8 @@ def weighted_values(values, probabilities, size):
 
 class RandomNextStep():
     def __init__(self, values, probabilities):
-        self.prob_density = stats.rv_discrete(name='discrete', values=(values, probabilities))
+        self.prob_density = stats.rv_discrete(name='discrete',
+                                              values=(values, probabilities))
 
     def __call__(self):
         return self.prob_density.rvs(size=1)[0]
@@ -61,7 +62,6 @@ class DiffusionEngine():
 
 
     def simulate(self, t_max):
-        # TODO add multiwalker support
         t_per_walker = 10
         number_of_walkers = t_max / t_per_walker
         all_states_per_iteration = []
@@ -70,9 +70,10 @@ class DiffusionEngine():
         with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
             # Start the load operations and mark each future with its URL
 
-            futures = [executor.submit(_simulate, pickle.dumps(self.markov_matrix),
-                                             random.choice(self.available_steps),
-                                             t_per_walker) for _ in range(int(number_of_walkers))]
+            futures = [executor.submit(_simulate,
+                                       pickle.dumps(self.markov_matrix),
+                       random.choice(self.available_steps),
+                       t_per_walker) for _ in range(int(number_of_walkers))]
             for future in concurrent.futures.as_completed(futures):
                 states = future.result()
                 all_states += states
@@ -83,7 +84,7 @@ class DiffusionEngine():
 
 
     def __str__(self):
-        return """DiffusionEngine with transition matrix: %s""" % self.markov_matrix
+        return """DiffusionEngine with transitions: %s""" % self.markov_matrix
 
 
 def _simulate(pickled_markov_matrix, current_state, t_max):
@@ -134,7 +135,6 @@ def compare_hypergraph_with_cliques(number_of_nodes,
         all_nodes += hyperedge
     c = Counter(all_nodes)
     xs, ys = zip(*c.items())
-    #plt.bar(xs, ys)
 
     if plot_representations:
         utils.plot_different_representations(nodes, hyperedges)
@@ -159,7 +159,6 @@ def compare_hypergraph_with_cliques(number_of_nodes,
 
     print("clique markov matrix")
     print(clique_markov_matrix)
-
 
     engine = DiffusionEngine(markov_matrix)
     most_common, states = engine.simulate(current_state, t_max)
