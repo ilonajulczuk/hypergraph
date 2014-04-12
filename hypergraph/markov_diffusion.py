@@ -6,9 +6,11 @@ import concurrent.futures
 
 from collections import Counter
 from matplotlib import pyplot as plt
-from generators import uniform_hypergraph
-import converters
-import utils
+from hypergraph.generators import uniform_hypergraph
+from hypergraph import converters
+from hypergraph import utils
+import os
+import time
 
 
 def create_markov_matrix(edges, count_itself=False):
@@ -30,14 +32,10 @@ def create_markov_matrix(edges, count_itself=False):
     return a_matrix
 
 
-def weighted_values(values, probabilities, size):
-    custm = stats.rv_discrete(name='custm', values=(values, probabilities))
-    R = custm.rvs(size=1)
-    return R[0]
-
-
 class RandomNextStep():
     def __init__(self, values, probabilities):
+        np.random.seed(os.getpid())
+        np.random.seed(os.getpid() + int(time.time() * 100))
         self.prob_density = stats.rv_discrete(name='discrete',
                                               values=(values, probabilities))
 
@@ -48,32 +46,29 @@ class RandomNextStep():
         return """Next step random variable"""
 
 
-def proceed(start, t_max):
-    #return self._simulate(start, t_max)
-    return "zz"
-
 class DiffusionEngine():
-    def __init__(self, markov_matrix):
+    def __init__(self, markov_matrix, t_per_walker=None, max_walkers=None):
         self.markov_matrix = markov_matrix
         self.available_steps = range(len(markov_matrix))
         self.next_steps = {i: RandomNextStep(self.available_steps,
                                              row) for i, row
                                              in enumerate(markov_matrix[:])}
+        self.t_per_walker = t_per_walker or 10
+        self.max_walkers = max_walkers or 4
 
 
     def simulate(self, t_max):
-        t_per_walker = 10
-        number_of_walkers = t_max / t_per_walker
+        number_of_walkers = t_max / self.t_per_walker
         all_states_per_iteration = []
         all_states = []
         c = Counter()
-        with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=self.max_walkers) as executor:
             # Start the load operations and mark each future with its URL
 
             futures = [executor.submit(_simulate,
                                        pickle.dumps(self.markov_matrix),
                        random.choice(self.available_steps),
-                       t_per_walker) for _ in range(int(number_of_walkers))]
+                       self.t_per_walker) for _ in range(int(number_of_walkers))]
             for future in concurrent.futures.as_completed(futures):
                 states = future.result()
                 all_states += states

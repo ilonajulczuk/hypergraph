@@ -1,8 +1,8 @@
 import networkx as nx
 import numpy as np
-import converters
+from hypergraph import converters
 from matplotlib import pyplot as plt
-from generators import uniform_hypergraph
+from hypergraph.generators import uniform_hypergraph
 
 
 def create_graph(number_of_nodes, cardinality, fraction_of_hyperedges):

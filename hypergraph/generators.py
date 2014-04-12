@@ -1,7 +1,7 @@
 import random
 import math
 import itertools
-from hypergraph import HyperGraph
+from hypergraph.hypergraph_models import HyperGraph
 
 
 def uniform_hypergraph(n=6, number_of_edges=None, k=3):
