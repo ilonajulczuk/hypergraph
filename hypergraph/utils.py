@@ -19,9 +19,10 @@ def create_graph(number_of_nodes, cardinality, fraction_of_hyperedges):
 def draw_bipartite_graph(G, group_1, group_2):
     """Draw graph as bipartite graph (U, V, E).
 
-    G is an netorkx graph
-    group_1 - U
-    group_2 - V
+    Parameters:
+        G: a networkx graph
+        group_1:  U
+        group_2:  V
     """
     pos = {x: (0, float(i % 20) * 2) for i, x in enumerate(group_1)}
     pos.update({node: (18.3, 0 + float(i % 20) * 2) for i,

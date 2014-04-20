@@ -13,9 +13,9 @@ def show_different_hipergraphs(n=10, k=3, parts=10):
         plt.figure(figsize=(6, 6))
         g = uniform_hypergraph(n=n, k=k,
                                         number_of_edges=int(n * fraction))
-        G = convert_to_nx_bipartite_graph(*g)
-        utils.draw_bipartite_graph(G, *utils.hipergraph_to_bipartite_parts(G))
-        hyper_G = convert_to_custom_hyper_G(*g)
+        G = convert_to_nx_bipartite_graph(g.nodes(), g.hyper_edges())
+        utils.draw_bipartite_graph(G, *utils.hypergraph_to_bipartite_parts(G))
+        hyper_G = convert_to_custom_hyper_G(g.nodes(), g.hyper_edges())
 
         plt.figure(figsize=(6, 6))
         nx.draw(hyper_G,
