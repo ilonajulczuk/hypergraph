@@ -1,14 +1,24 @@
 import numpy as np
 
 from collections import Counter
-from matplotlib import pyplot as plt
-from hypergraph.generators import uniform_hypergraph
-from hypergraph import converters
-from hypergraph import utils
-from hypergraph import DiffusionEngine
 
 
 def create_markov_matrix(edges, count_itself=False):
+    """Create transition matriv of Markov chain
+
+    Parameters:
+        edges: collection of edges
+        count_itself: flag determining if there should be loops
+
+    Algorithm works as follows. Every edge is compared
+    with other edges. If they have nonempty intersection,
+    appriopriate cell in adjacency matrix gets cardinality
+    of this intersection.
+
+    If `count_itself` is True, diagonal of adjacency
+    matrix has number of nodes in hyperedge that doesn't
+    belong to any intersection (leftovers).
+    """
     a_matrix = np.zeros((len(edges), len(edges)))
 
     for i, edge_1 in enumerate(edges):
@@ -27,83 +37,19 @@ def create_markov_matrix(edges, count_itself=False):
     return a_matrix
 
 
-def count_nodes(nodes, edges, occurences):
+def count_nodes(nodes, edges, occurrences):
+    """Given nodes, edges and occurrences of edges,
+    return recalculated occurrences of nodes.
+
+    If node is in edge, it get one more occurence.
+    """
     c = Counter()
-    for index, count in occurences:
+    for index, count in occurrences:
         for edge in edges[index]:
             c[edge] += count
     for node in nodes:
         if node not in c:
             c[node] = 0
     return c
-
-
-def compare_hypergraph_with_cliques(number_of_nodes,
-                                    cardinality, fraction, t_max,
-                                    plot_representations=False):
-    HG = uniform_hypergraph(
-        n=number_of_nodes,
-        k=cardinality,
-        number_of_edges=int(
-            number_of_nodes *
-            fraction))
-
-    nodes = HG.nodes()
-    hyperedges = HG.hyper_edges()
-
-    all_nodes = []
-    for hyperedge in hyperedges:
-        all_nodes += hyperedge
-    c = Counter(all_nodes)
-    xs, ys = zip(*c.items())
-
-    if plot_representations:
-        utils.plot_different_representations(nodes, hyperedges)
-
-    markov_matrix = create_markov_matrix(hyperedges)
-    print(markov_matrix)
-    current_state = 1
-    engine = DiffusionEngine(markov_matrix)
-    most_common, states = engine.simulate(current_state, t_max)
-
-    plt.figure(figsize=(12, 10))
-    utils.plot_hyperedges_frequencies(most_common, hyperedges,
-                                'Ocurrences of hyperedges in a hypergraph')
-
-    most_common_nodes = count_nodes(nodes, hyperedges, most_common)
-
-    plt.figure(figsize=(12, 10))
-    utils.plot_nodes_frequencies(most_common_nodes, 'Nodes in a hypergraph')
-
-    clique_graph = converters.convert_to_clique_graph(nodes, hyperedges)
-    clique_markov_matrix = create_markov_matrix(clique_graph.edges())
-
-    print("clique markov matrix")
-    print(clique_markov_matrix)
-
-    engine = DiffusionEngine(markov_matrix)
-    most_common, states = engine.simulate(current_state, t_max)
-
-    plt.figure(figsize=(12, 10))
-    utils.plot_hyperedges_frequencies(most_common, clique_graph.edges(),
-                                'Ocurrences of edges in a graph')
-
-    most_common_nodes = count_nodes(clique_graph.nodes(), clique_graph.edges(),
-                                    most_common)
-    plt.figure(figsize=(12, 10))
-    utils.plot_nodes_frequencies(most_common_nodes, 'Nodes in a graph')
-
-
-def demo():
-    n = 20
-    k = 3
-    fraction = 2.0 / 3
-
-    for simulation_time in [100]:
-        compare_hypergraph_with_cliques(n, k, fraction, simulation_time)
-
-
-if __name__ == '__main__':
-    demo()
 
 

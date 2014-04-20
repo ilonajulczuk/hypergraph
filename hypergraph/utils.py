@@ -34,8 +34,7 @@ def draw_bipartite_graph(G, group_1, group_2):
 
 
 def hypergraph_to_bipartite_parts(G):
-    """Convert hypergraph to
-
+    """Convert hypergraph to two parts: nodes and edges.
     """
     group_1 = (node for node in G.nodes() if not isinstance(node, tuple))
     group_2 = (node for node in G.nodes() if isinstance(node, tuple))
@@ -48,7 +47,7 @@ def plot_different_representations(nodes, hyperedges):
     print("Bipartite graph")
     nx_bipartite = converters.convert_to_nx_bipartite_graph(nodes, hyperedges)
     draw_bipartite_graph(nx_bipartite,
-                               *hypergraph_to_bipartite_parts(nx_bipartite))
+                         *hypergraph_to_bipartite_parts(nx_bipartite))
 
     print("Graph of hypereges as nodes")
     custom_hyper_g = converters.convert_to_custom_hyper_G(nodes, hyperedges)
@@ -77,7 +76,8 @@ def get_names_and_occurrences(most_common_nodes, normed=True):
 
     if normed:
         all_occurrences = sum(node_occurrences)
-        node_occurrences = [float(oc) / all_occurrences for oc in node_occurrences]
+        node_occurrences = [float(oc) / all_occurrences
+                            for oc in node_occurrences]
     return names_of_nodes, node_occurrences
 
 
