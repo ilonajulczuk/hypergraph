@@ -43,7 +43,7 @@ def plot_diffusion_results(most_common, most_common_nodes, edges, name):
 
 
 def simulate_diffusion(nodes, edges, markov_matrix, t_max):
-    engine = DiffusionEngine(markov_matrix)
+    engine = DiffusionEngine(markov_matrix, t_per_walker=100)
     most_common, states = engine.simulate(t_max)
     most_common_nodes = count_nodes(nodes, edges, most_common)
     return most_common, most_common_nodes, states
@@ -83,9 +83,9 @@ def compare_to_theory(experimental, theoretical_1, theoretical_2):
 
 
 def comparing_pipeline(t_max=10000):
-    for n in range(30, 31, 5):
-        for k in range(4, 5):
-            for f in range(90, 101, 10):
+    for n in range(20, 31, 5):
+        for k in range(3, 4):
+            for f in range(90, 91, 10):
                 f = float(f) / 100
                 # number_of_nodes, cardinality, fraction_of_hyperedges
                 print(n, k, f)
@@ -137,7 +137,7 @@ def comparing_pipeline(t_max=10000):
                         color="#dcab11")
 
                 plt.legend(loc=0)
-                plt.savefig("diffusion_%s_%s_%s.png" % (n, k, f))
+                plt.savefig("next_diffusion_%s_%s_%s.png" % (n, k, f))
 
 
 if __name__ == '__main__':
