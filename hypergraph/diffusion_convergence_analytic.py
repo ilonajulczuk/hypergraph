@@ -13,7 +13,7 @@ def diffusion_on_hypergraph(hypergraph, markov_matrix,
                             t_max, plot_results=False):
     """Simulate numerically diffusion on a hypergraph,
 
-    Diffusion is simulated using markov chains.
+    Diffusion is simulated using Markov Chains.
 
     """
     nodes = hypergraph.nodes()
@@ -30,9 +30,22 @@ def diffusion_on_hypergraph(hypergraph, markov_matrix,
 
 
 def plot_diffusion_results(most_common, most_common_nodes, edges, name):
+    """Plot results of diffusion.
+
+    Parameters:
+        most_common: indexes of hyperedges and their frequences
+        most_common_nodes: indexes of nodes and their frequences
+        edges: names of edge
+        name: name of object on which diffusion was simulated, used
+            plot title
+
+    Returns:
+        probabilities of being in a node
+
+    """
     plt.figure(figsize=(8, 4))
     utils.plot_hyperedges_frequencies(most_common, edges,
-                                      ('Ocurrences of hyperedges in'
+                                      ('Occurrences of hyperedges in'
                                        ' a {}').format(name),
                                       normed=True)
 
@@ -43,6 +56,13 @@ def plot_diffusion_results(most_common, most_common_nodes, edges, name):
 
 
 def simulate_diffusion(nodes, edges, markov_matrix, t_max):
+    """Simulate diffusion using diffusion engine.
+
+    Returns:
+        most_common: hyper_edges to their probabilities of occurrences
+        most_common_nodes: similar to above, but with nodes
+        states: list of states whcich were visited by workers
+    """
     engine = DiffusionEngine(markov_matrix, t_per_walker=100)
     most_common, states = engine.simulate(t_max)
     most_common_nodes = count_nodes(nodes, edges, most_common)
@@ -50,6 +70,7 @@ def simulate_diffusion(nodes, edges, markov_matrix, t_max):
 
 
 def diffusion_on_clique(hypergraph, t_max, plot_results=False):
+    """Simulate diffusion on corresponding clique graph"""
     nodes = hypergraph.nodes()
     hyper_edges = hypergraph.hyper_edges()
     clique_graph = converters.convert_to_clique_graph(nodes, hyper_edges)
@@ -66,29 +87,42 @@ def diffusion_on_clique(hypergraph, t_max, plot_results=False):
         return utils.get_names_and_occurrences(most_common_nodes)[1]
 
 
-def correct_zero(node):
-    if node == 0:
-        node += 0.00001
-    return node
+def correct_zero(value):
+    """Add small amount if value is 0.
+
+    Used as workaround of scipy.chisquare bug.
+    """
+    if value == 0:
+        value += 0.00001
+    return value
 
 
-def compare_to_theory(experimental, theoretical_1, theoretical_2):
+def compare_to_theory(experimental, *theoretical_models):
+    """Use chisquare test to evaluate models"""
+
+    # correcting 0 is a workaround of scipy.chisquare bug
+    # this bug gives nan in test if there is zero in data
     experimental = [correct_zero(node) for node in experimental]
-    theoretical_1 = [correct_zero(node) for node in theoretical_1]
-    theoretical_2 = [correct_zero(node) for node in theoretical_2]
+
+
+    for theoretical in theoretical_models:
+        theoretical = [correct_zero(node) for node in theoretical]
 
     return stats.chisquare(experimental,
-                           f_exp=[theoretical_1, theoretical_2],
+                           f_exp=theoretical_models,
                            axis=1)
 
 
 def comparing_pipeline(t_max=10000):
+    """Generate various hypergraphs, run diffusion and compare models
+    """
     for n in range(20, 31, 5):
         for k in range(3, 4):
             for f in range(90, 91, 10):
                 f = float(f) / 100
                 # number_of_nodes, cardinality, fraction_of_hyperedges
                 print(n, k, f)
+
                 HG = utils.create_graph(n, k, f)
                 number_of_nodes = analytical.prediction(HG)
                 number_of_nodes_clique = analytical.prediction(HG,
@@ -98,8 +132,6 @@ def comparing_pipeline(t_max=10000):
                 markov_matrix = create_markov_matrix(HG.hyper_edges(),
                                                      count_itself=False)
 
-                print(markov_matrix)
-                print(markov_matrix_loops)
                 simulated_n_o_n = diffusion_on_hypergraph(HG, markov_matrix,
                                                           t_max)
                 simulated_n_o_n_i = diffusion_on_hypergraph(HG,
@@ -108,9 +140,6 @@ def comparing_pipeline(t_max=10000):
 
                 simulated_n_o_n_c = diffusion_on_clique(HG, t_max=t_max)
 
-                print(simulated_n_o_n)
-                print(simulated_n_o_n_i)
-                print(simulated_n_o_n_c)
                 plt.figure(figsize=(12, 10))
 
                 width = 0.15
