@@ -179,9 +179,11 @@ class HyperGraph(nx.Graph):
         return set(edge) in self.hyperedge
 
     def hyper_edges(self):
+        """Hyper_edges of a hypegraph"""
         return self.hyperedge
 
     def hyper_edges_iter(self):
+        """Return iterator of hyper_edges"""
         for edge in self.hyperedge:
             yield edge
 
