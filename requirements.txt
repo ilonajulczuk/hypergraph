@@ -1,5 +1,4 @@
 Cython==0.20.1
-Magic-file-extensions==0.2
 PyOpenGL==3.0.2
 autopep8==1.0
 decorator==3.4.0
