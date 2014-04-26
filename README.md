@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/atterothegreatest/hypergraph.png?label=ready&title=Ready)](https://waffle.io/atterothegreatest/hypergraph)
 #Hypergraphs are fun!
 
 Code is written in python 3. I use such tools
