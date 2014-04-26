@@ -3,8 +3,8 @@ from scipy import stats
 from matplotlib import pyplot as plt
 from hypergraph import converters
 from hypergraph import analytical
+from hypergraph.diffusion_engine import DiffusionEngine
 from hypergraph.markov_diffusion import (create_markov_matrix,
-                                         DiffusionEngine,
                                          count_nodes)
 from hypergraph import utils
 

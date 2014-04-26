@@ -46,7 +46,7 @@ def plot_different_representations(nodes, hyperedges):
 
     print("Bipartite graph")
     nx_bipartite = converters.convert_to_nx_bipartite_graph(nodes, hyperedges)
-    draw_bipartite_graph(nx_bipartite,
+    plot_bipartite_graph(nx_bipartite,
                          *hypergraph_to_bipartite_parts(nx_bipartite))
 
     print("Graph of hypereges as nodes")
