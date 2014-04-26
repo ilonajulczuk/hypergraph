@@ -16,7 +16,7 @@ def create_graph(number_of_nodes, cardinality, fraction_of_hyperedges):
     return HG
 
 
-def draw_bipartite_graph(G, group_1, group_2):
+def plot_bipartite_graph(G, group_1, group_2):
     """Draw graph as bipartite graph (U, V, E).
 
     Parameters:
