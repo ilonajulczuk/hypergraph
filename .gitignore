@@ -1,5 +1,11 @@
 *.pyc
+.buildinfo
+.coverage
+*.swo
+*.html
 *.swp
 py3
 .ipynb_checkpoints
 tags
+visualization
+hypergraph/plots
