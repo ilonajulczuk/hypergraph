@@ -1,14 +1,20 @@
 [![Stories in Ready](https://badge.waffle.io/atterothegreatest/hypergraph.png?label=ready&title=Ready)](https://waffle.io/atterothegreatest/hypergraph)
 #Hypergraphs are fun!
 
-Code is written in python 3. I use such tools
-as [IPython](http://ipython.org/), [numpy](http://www.numpy.org/)
-and [networkx](http://networkx.github.io/)
-. I write about first two on my
-[blog](http://blog.atte.ro/posts/python-for-science.html)..
+Code is written in python 3.
+
+I use tools such as
+
+- [IPython](http://ipython.org/)
+- [numpy](http://www.numpy.org/)
+- [networkx](http://networkx.github.io/)
+
+
+I write about first two on my
+[blog](http://blog.atte.ro/posts/python-for-science.html)...
 
 IPython has a powerful notebook which is amazing for sharing code
-and insights and interactive development.
+and insights and for interactive development.
 
 ##Links to notebooks:
 
@@ -29,4 +35,14 @@ is conceptually different from hypergraphs.
 ###How are hypergraphs different from graphs with cliques in diffusion simulation with markov chain?
 
 - [hypergraphs vs graphs of cliques - diffusion](http://nbviewer.ipython.org/github/atteroTheGreatest/hypergraph/blob/master/hypergraph/clique_comparison.ipynb?create=1)
+
+###Hypergraph traversal with random walk
+
+I developed two models. One is node based, second is edge based.
+
+You can find an interactive notebook here:
+
+- [models, numerical solutions, interactive comparison](http://nbviewer.ipython.org/github/atteroTheGreatest/hypergraph/blob/master/notebooks/Modelling%20diffusion%20on%20hypergraph.ipynb?create=1)
+
+
 
