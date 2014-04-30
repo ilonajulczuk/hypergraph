@@ -17,14 +17,15 @@ class RandomNextStep():
 
     So basically it's a wrapper around discrete random variable.
     """
-    def __init__(self, values, probabilities):
-        np.random.seed(os.getpid())
+    def __init__(self, values, probabilities, t_per_walker):
         np.random.seed(os.getpid() + int(time.time() * 100))
         self.prob_density = stats.rv_discrete(name='discrete',
                                               values=(values, probabilities))
 
+        self.numbers = list(self.prob_density.rvs(size=t_per_walker))
+
     def __call__(self):
-        return self.prob_density.rvs(size=1)[0]
+        return self.numbers.pop()
 
     def __str__(self):
         return """Next step random variable"""
@@ -38,13 +39,9 @@ class DiffusionEngine():
     """
     def __init__(self, markov_matrix, t_per_walker=None, max_walkers=None):
         self.markov_matrix = markov_matrix
-        self.available_steps = range(len(markov_matrix))
-        self.next_steps = {i: RandomNextStep(self.available_steps,
-                                             row) for i, row
-                                             in enumerate(markov_matrix[:])}
         self.t_per_walker = t_per_walker or 10
         self.max_walkers = max_walkers or 4
-
+        self.available_steps = range(len(markov_matrix))
 
     def simulate(self, t_max):
         number_of_walkers = t_max / self.t_per_walker
@@ -73,7 +70,7 @@ def _simulate(pickled_markov_matrix, current_state, t_max):
     markov_matrix = pickle.loads(pickled_markov_matrix)
     available_steps = range(len(markov_matrix))
     next_steps = {i: RandomNextStep(available_steps,
-                                    row) for i, row
+                                    row, t_max) for i, row
                                     in enumerate(markov_matrix[:])}
     def step(current_state):
         next_state = next_steps[current_state]()
