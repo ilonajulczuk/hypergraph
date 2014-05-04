@@ -1,6 +1,5 @@
 import random
 import math
-import itertools
 from hypergraph.hypergraph_models import HyperGraph
 
 
@@ -24,10 +23,7 @@ def uniform_hypergraph(n=6, number_of_edges=None, k=3):
 
 
 def random_combinations(set_of_values, cardinality, count):
-    all_combinations = list(itertools.combinations(set_of_values,
-                                                   cardinality))
-
-    return random.sample(all_combinations, count)
+    return [random.sample(set_of_values, cardinality) for _ in range(count)]
 
 
 def generic_hypergraph(number_of_nodes, edges_params):
