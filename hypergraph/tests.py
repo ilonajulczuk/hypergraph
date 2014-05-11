@@ -1,7 +1,7 @@
 import nose.tools as nt
 import os
 import hypergraph.generators as generators
-from hypergraph.test_notebooks import test_notebook
+from hypergraph.notebook_utils import run_notebook
 from IPython.nbformat.current import reads
 
 
@@ -35,4 +35,4 @@ def test_notebooks():
         print("testing %s" % ipynb)
         with open(ipynb) as f:
             nb = reads(f.read(), 'json')
-        test_notebook(nb)
+            run_notebook(nb)

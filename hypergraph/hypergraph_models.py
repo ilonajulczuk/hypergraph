@@ -87,10 +87,10 @@ class HyperGraph(nx.Graph):
             self.hadj[new_edge_index] = {}
 
 
-        for i, old_edge in enumerate(self.hyperedge):
-            if i != new_edge_index:
-                self.hadj[i][new_edge_index] = len(edge & old_edge)
-                self.hadj[new_edge_index][i] = self.hadj[i][new_edge_index]
+            for i, old_edge in enumerate(self.hyperedge):
+                if i != new_edge_index:
+                    self.hadj[i][new_edge_index] = len(edge & old_edge)
+                    self.hadj[new_edge_index][i] = self.hadj[i][new_edge_index]
 
     def add_edges_from(self, ebunch, attr_dict=None, **attr):
         """Add all the edges in ebunch.
