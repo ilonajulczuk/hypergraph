@@ -13,8 +13,8 @@ from matplotlib import pyplot as plt
 
 
 from hypergraph.markov_diffusion import (create_markov_matrix,
-                                         DiffusionEngine,
                                          count_nodes)
+from hypergraph.diffusion_engine import DiffusionEngine
 
 
 def entropy(pis):
@@ -47,8 +47,7 @@ def entropy_value(states, nodes, edges):
     most_common = Counter(cum_states).most_common()
     most_common_nodes = count_nodes(nodes, edges, most_common)
     frequencies = (utils.get_names_and_occurrences(most_common_nodes)[1])
-    entropy_value = entropy(frequencies)
-    return entropy_value
+    return entropy(frequencies)
 
 
 def compare_entropy(HG, t_max=10000, t_per_walker=100, title=None,

@@ -1,4 +1,3 @@
-from collections import Counter
 from matplotlib import pyplot as plt
 from hypergraph.generators import uniform_hypergraph
 from hypergraph import converters
@@ -25,8 +24,6 @@ def compare_hypergraph_with_cliques(number_of_nodes,
     all_nodes = []
     for hyperedge in hyperedges:
         all_nodes += hyperedge
-    c = Counter(all_nodes)
-    xs, ys = zip(*c.items())
 
     if plot_representations:
         utils.plot_different_representations(nodes, hyperedges)
@@ -38,7 +35,7 @@ def compare_hypergraph_with_cliques(number_of_nodes,
 
     plt.figure(figsize=(12, 10))
     utils.plot_hyperedges_frequencies(most_common, hyperedges,
-                                      'Ocurrences of hyperedges'
+                                      'Occurrences of hyperedges'
                                       ' in a hypergraph')
 
     most_common_nodes = count_nodes(nodes, hyperedges, most_common)
@@ -57,7 +54,7 @@ def compare_hypergraph_with_cliques(number_of_nodes,
 
     plt.figure(figsize=(12, 10))
     utils.plot_hyperedges_frequencies(most_common, clique_graph.edges(),
-                                      'Ocurrences of edges in a graph')
+                                      'Occurrences of edges in a graph')
 
     most_common_nodes = count_nodes(clique_graph.nodes(), clique_graph.edges(),
                                     most_common)

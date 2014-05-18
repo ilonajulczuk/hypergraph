@@ -61,7 +61,6 @@ class DiffusionEngine():
             c[state] += 1
         return c.most_common(), all_states_per_iteration
 
-
     def __str__(self):
         return """DiffusionEngine with transitions: %s""" % self.markov_matrix
 
@@ -71,9 +70,10 @@ def _simulate(pickled_markov_matrix, current_state, t_max):
     available_steps = range(len(markov_matrix))
     next_steps = {i: RandomNextStep(available_steps,
                                     row, t_max) for i, row
-                                    in enumerate(markov_matrix[:])}
-    def step(current_state):
-        next_state = next_steps[current_state]()
+                  in enumerate(markov_matrix[:])}
+
+    def step(state):
+        next_state = next_steps[state]()
         return next_state
     c = Counter()
     states = []
