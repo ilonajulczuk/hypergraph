@@ -24,7 +24,7 @@ def diffusion_on_hypergraph(hypergraph, markov_matrix,
 
     if plot_results:
         return plot_diffusion_results(most_common, most_common_nodes,
-                               hyper_edges, "hypergraph")
+                                      hyper_edges, "hypergraph")
     else:
         return utils.get_names_and_occurrences(most_common_nodes)[1]
 
@@ -61,7 +61,7 @@ def simulate_diffusion(nodes, edges, markov_matrix, t_max):
     Returns:
         most_common: hyper_edges to their probabilities of occurrences
         most_common_nodes: similar to above, but with nodes
-        states: list of states whcich were visited by workers
+        states: list of states which were visited by workers
     """
     engine = DiffusionEngine(markov_matrix, t_per_walker=100)
     most_common, states = engine.simulate(t_max)
@@ -82,7 +82,7 @@ def diffusion_on_clique(hypergraph, t_max, plot_results=False):
         nodes, edges, markov_matrix, t_max)
     if plot_results:
         return plot_diffusion_results(most_common, most_common_nodes,
-                               hyper_edges, "clique")
+                                      hyper_edges, "clique")
     else:
         return utils.get_names_and_occurrences(most_common_nodes)[1]
 
@@ -103,7 +103,6 @@ def compare_to_theory(experimental, *theoretical_models):
     # correcting 0 is a workaround of scipy.chisquare bug
     # this bug gives nan in test if there is zero in data
     experimental = [correct_zero(node) for node in experimental]
-
 
     for theoretical in theoretical_models:
         theoretical = [correct_zero(node) for node in theoretical]
@@ -135,8 +134,8 @@ def comparing_pipeline(t_max=10000):
                 simulated_n_o_n = diffusion_on_hypergraph(HG, markov_matrix,
                                                           t_max)
                 simulated_n_o_n_i = diffusion_on_hypergraph(HG,
-                                                       markov_matrix_loops,
-                                                       t_max)
+                                                            markov_matrix_loops,
+                                                            t_max)
 
                 simulated_n_o_n_c = diffusion_on_clique(HG, t_max=t_max)
 
