@@ -103,7 +103,7 @@ def analytical_hypergraph_edges(hyper_graph):
     for edge in hyper_graph.hyper_edges():
         edge_cardinality = len(edge)
         phis.append(edge_cardinality)
-        all_phis += len(edge_cardinality)
+        all_phis += edge_cardinality
 
     pis = [phi / all_phis for phi in phis]
     return pis

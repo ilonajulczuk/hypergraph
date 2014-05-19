@@ -51,6 +51,10 @@ def create_markov_matrix_model_nodes(hyper_graph):
             if len(edges_both):
                 markov_matrix[node - 1] /= len(edges_first)
 
+    # normalize matrix
+    for row in markov_matrix:
+        row /= np.sum(row)
+
     return markov_matrix
 
 
