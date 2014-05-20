@@ -40,11 +40,11 @@ class DiffusionEngine():
     def __init__(self, markov_matrix, t_per_walker=None, max_walkers=None):
         self.markov_matrix = markov_matrix
         self.t_per_walker = t_per_walker or 10
-        self.max_walkers = max_walkers or 4
+        self.max_walkers = max_walkers or 1
         self.available_steps = range(len(markov_matrix))
 
     def simulate(self, t_max):
-        number_of_walkers = t_max / self.t_per_walker
+        number_of_walkers = max(t_max / self.t_per_walker, 1)
         all_states_per_iteration = []
         all_states = []
         c = Counter()
