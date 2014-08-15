@@ -58,3 +58,5 @@ def test_diffusion_engine():
         chosen_states += states[0]
 
     nt.assert_equals(len(chosen_states), t_max / number_of_walkers - 10)
+
+

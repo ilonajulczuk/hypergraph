@@ -8,3 +8,4 @@ simplejson==3.3.3
 six==1.5.2
 urwid==1.1.2
 virtualenv==1.11.3
+numpy==1.8.1

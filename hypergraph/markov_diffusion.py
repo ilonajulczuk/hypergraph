@@ -1,4 +1,5 @@
 import numpy as np
+from collections import defaultdict
 
 from collections import Counter
 
@@ -37,23 +38,28 @@ def create_markov_matrix(edges, count_itself=False):
     return a_matrix
 
 
+def populate_node_hyperedges(hyper_graph):
+    node_hyperedges = defaultdict(list)
+    for hyper_edge in hyper_graph.hyper_edges():
+        for node in hyper_edge:
+            node_hyperedges[node].append(hyper_edge)
+    return node_hyperedges
+
+
 def create_markov_matrix_model_nodes(hyper_graph):
     number_of_nodes = len(hyper_graph.nodes())
     markov_matrix = np.zeros((number_of_nodes, number_of_nodes))
 
+    node_hyper_edges = populate_node_hyperedges(hyper_graph)
+
     for node in hyper_graph.nodes():
-        for node_2 in hyper_graph.nodes():
-            edges_both = [edge for edge in hyper_graph.hyper_edges() if node in edge and node_2 in edge]
-            edges_first = [edge for edge in hyper_graph.hyper_edges() if node in edge]
+        for hyper_edge in node_hyper_edges[node]:
+            for node2 in hyper_edge:
+                markov_matrix[node - 1, node2 - 1] += 1 / len(hyper_edge) / len(node_hyper_edges[node])
 
-            for edge in edges_both:
-                markov_matrix[node - 1, node_2 - 1] += 1 / len(edge)
-            if len(edges_both):
-                markov_matrix[node - 1] /= len(edges_first)
-
-    # normalize matrix
     for row in markov_matrix:
-        row /= np.sum(row)
+        if abs(np.sum(row)) > 0.0001:
+            row /= np.sum(row)
 
     return markov_matrix
 

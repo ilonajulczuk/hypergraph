@@ -49,7 +49,7 @@ class DiffusionEngine():
         all_states = []
         c = Counter()
         with concurrent.futures.ProcessPoolExecutor(max_workers=self.max_walkers) as executor:
-            futures = [executor.submit(_simulate,
+            futures = [executor.submit(simulate,
                                        pickle.dumps(self.markov_matrix),
                        random.choice(self.available_steps),
                        self.t_per_walker) for _ in range(int(number_of_walkers))]
@@ -65,7 +65,7 @@ class DiffusionEngine():
         return """DiffusionEngine with transitions: %s""" % self.markov_matrix
 
 
-def _simulate(pickled_markov_matrix, current_state, t_max):
+def _simulate_old(pickled_markov_matrix, current_state, t_max):
     markov_matrix = pickle.loads(pickled_markov_matrix)
     available_steps = range(len(markov_matrix))
     next_steps = {i: RandomNextStep(available_steps,
@@ -75,11 +75,38 @@ def _simulate(pickled_markov_matrix, current_state, t_max):
     def step(state):
         next_state = next_steps[state]()
         return next_state
-    c = Counter()
     states = []
     for _ in range(t_max):
         current_state = step(current_state)
         visited_hyperedge = current_state
-        c[visited_hyperedge] += 1
         states.append(visited_hyperedge)
     return states
+
+
+def probabilities_to_distribution(discrete_probabilities):
+    return [sum(discrete_probabilities[:i]) for i in range(1, len(discrete_probabilities) + 1)]
+
+
+def simulate(pickled_markov_matrix, current_state, t_max):
+    try:
+        markov_matrix = pickle.loads(pickled_markov_matrix)
+        state_to_distribution_function = {}
+        for i, probabilities in enumerate(markov_matrix):
+            state_to_distribution_function[i] = probabilities_to_distribution(probabilities)
+
+        states = []
+        state = current_state
+        for _ in range(t_max):
+            state = next_value(state_to_distribution_function[state])
+            states.append(state)
+
+        return states
+    except:
+        import traceback
+        traceback.print_exc()
+        return []
+
+
+def next_value(distribution_function):
+    prob = random.random()
+    return distribution_function.index([x for x in distribution_function if x > prob][0])

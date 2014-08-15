@@ -80,7 +80,6 @@ class HyperGraph(nx.Graph):
                 self.adj[node][v] = datadict
                 self.adj[v][node] = datadict
 
-
         if edge not in self.hyperedge:
             new_edge_index = len(self.hyperedge)
             self.hyperedge.append(set(edge))
@@ -217,8 +216,6 @@ class HyperGraph(nx.Graph):
             self.hyperedge.remove(set(e))
         except ValueError:
             raise nx.NetworkXError("The edge %s is not in the hypergraph" % (e))
-
-
 
     def remove_edges_from(self, ebunch):
         """Remove all edges specified in ebunch.
