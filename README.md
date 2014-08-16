@@ -10,6 +10,23 @@ I use tools such as
 - [networkx](http://networkx.github.io/)
 
 
+##Installation
+
+- clone the library
+- create virtualenv
+- install requirements
+- run setup.py
+
+```
+$ python setup.py install
+```
+
+You can also use [automated provisioning](https://github.com/atteroTheGreatest/hypergraph-provisioning)
+which would set up
+a virtual machine with all dependencies installed and ready to
+use interactive examples in IPython notebook server.
+
+
 I write about first two on my
 [blog](http://blog.atte.ro/posts/python-for-science.html)...
 
