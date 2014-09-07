@@ -1,8 +1,5 @@
-#!/usr/bin/env python
 """
 simple example script for running and testing notebooks.
-
-Usage: `ipnbdoctest.py foo.ipynb [bar.ipynb [...]]`
 
 Each cell is submitted to the kernel, and the outputs are compared with those stored in the notebook.
 """
@@ -14,13 +11,8 @@ import re
 from collections import defaultdict
 from queue import Empty
 
-try:
-    from IPython.kernel import KernelManager
-except ImportError:
-    from IPython.zmq.blockingkernelmanager import BlockingKernelManager as KernelManager
-
-from IPython.nbformat.current import reads, NotebookNode
-
+from IPython.kernel import KernelManager
+from IPython.nbformat.current import NotebookNode
 
 
 def sanitize(s):
@@ -66,7 +58,7 @@ def consolidate_outputs(outputs):
 def compare_outputs(test, ref, skip_compare=('png', 'traceback', 'latex', 'prompt_number')):
     for key in ref:
         if key not in test:
-            print( "missing key: %s != %s" % (test.keys(), ref.keys()))
+            print("missing key: %s != %s" % (test.keys(), ref.keys()))
             return False
         elif key not in skip_compare and sanitize(test[key]) != sanitize(ref[key]):
             # print "mismatch %s:" % key
@@ -126,15 +118,9 @@ def run_cell(shell, iopub, cell):
 def run_notebook(nb):
     km = KernelManager()
     km.start_kernel(extra_arguments=['--pylab=inline'], stderr=open(os.devnull, 'w'))
-    try:
-        kc = km.client()
-        kc.start_channels()
-        iopub = kc.iopub_channel
-    except AttributeError:
-        # IPython 0.13
-        kc = km
-        kc.start_channels()
-        iopub = kc.sub_channel
+    kc = km.client()
+    kc.start_channels()
+    iopub = kc.iopub_channel
     shell = kc.shell_channel
 
     # run %pylab inline, because some notebooks assume this
@@ -175,16 +161,7 @@ def run_notebook(nb):
     if failures:
         print("    %3i cells mismatched output" % failures)
     if errors:
-        print ("    %3i cells failed to complete" % errors)
+        print("    %3i cells failed to complete" % errors)
     kc.stop_channels()
     km.shutdown_kernel()
     del km
-
-if __name__ == '__main__':
-    notebooks_path = 'notebooks'
-    notebooks_filenames = [notebooks_path + '/' + name for name in os.listdir(notebooks_path) if name.endswith('ipynb')]
-    for ipynb in notebooks_filenames:
-        print("testing %s" % ipynb)
-        with open(ipynb) as f:
-            nb = reads(f.read(), 'json')
-            test_notebook(nb)
