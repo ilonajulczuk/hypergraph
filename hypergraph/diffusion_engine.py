@@ -1,34 +1,8 @@
 import random
-import os
-import time
 import pickle
-import numpy as np
-from scipy import stats
 import concurrent.futures
 
 from collections import Counter
-
-
-class RandomNextStep():
-    """Abstraction of random next step from given place.
-
-    It's initialized with set of values and their probabilities.
-    When called returns one of values with this probability.
-
-    So basically it's a wrapper around discrete random variable.
-    """
-    def __init__(self, values, probabilities, t_per_walker):
-        np.random.seed(os.getpid() + int(time.time() * 100))
-        self.prob_density = stats.rv_discrete(name='discrete',
-                                              values=(values, probabilities))
-
-        self.numbers = list(self.prob_density.rvs(size=t_per_walker))
-
-    def __call__(self):
-        return self.numbers.pop()
-
-    def __str__(self):
-        return """Next step random variable"""
 
 
 class DiffusionEngine():
@@ -40,15 +14,16 @@ class DiffusionEngine():
     def __init__(self, markov_matrix, t_per_walker=None, max_walkers=None):
         self.markov_matrix = markov_matrix
         self.t_per_walker = t_per_walker or 10
-        self.max_walkers = max_walkers or 1
+        self.max_walkers = max_walkers or 4
         self.available_steps = range(len(markov_matrix))
 
     def simulate(self, t_max):
+        #TODO tests and refactor
         number_of_walkers = max(t_max / self.t_per_walker, 1)
         all_states_per_iteration = []
         all_states = []
         c = Counter()
-        with concurrent.futures.ProcessPoolExecutor(max_workers=self.max_walkers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_walkers) as executor:
             futures = [executor.submit(simulate,
                                        pickle.dumps(self.markov_matrix),
                        random.choice(self.available_steps),
@@ -63,24 +38,6 @@ class DiffusionEngine():
 
     def __str__(self):
         return """DiffusionEngine with transitions: %s""" % self.markov_matrix
-
-
-def _simulate_old(pickled_markov_matrix, current_state, t_max):
-    markov_matrix = pickle.loads(pickled_markov_matrix)
-    available_steps = range(len(markov_matrix))
-    next_steps = {i: RandomNextStep(available_steps,
-                                    row, t_max) for i, row
-                  in enumerate(markov_matrix[:])}
-
-    def step(state):
-        next_state = next_steps[state]()
-        return next_state
-    states = []
-    for _ in range(t_max):
-        current_state = step(current_state)
-        visited_hyperedge = current_state
-        states.append(visited_hyperedge)
-    return states
 
 
 def probabilities_to_distribution(discrete_probabilities):
