@@ -45,23 +45,18 @@ def probabilities_to_distribution(discrete_probabilities):
 
 
 def simulate(pickled_markov_matrix, current_state, t_max):
-    try:
-        markov_matrix = pickle.loads(pickled_markov_matrix)
-        state_to_distribution_function = {}
-        for i, probabilities in enumerate(markov_matrix):
-            state_to_distribution_function[i] = probabilities_to_distribution(probabilities)
+    markov_matrix = pickle.loads(pickled_markov_matrix)
+    state_to_distribution_function = {}
+    for i, probabilities in enumerate(markov_matrix):
+        state_to_distribution_function[i] = probabilities_to_distribution(probabilities)
 
-        states = []
-        state = current_state
-        for _ in range(t_max):
-            state = next_value(state_to_distribution_function[state])
-            states.append(state)
+    states = []
+    state = current_state
+    for _ in range(t_max):
+        state = next_value(state_to_distribution_function[state])
+        states.append(state)
 
-        return states
-    except:
-        import traceback
-        traceback.print_exc()
-        return []
+    return states
 
 
 def next_value(distribution_function):

@@ -2,18 +2,6 @@ import networkx as nx
 import numpy as np
 from hypergraph import converters
 from matplotlib import pyplot as plt
-from hypergraph.generators import uniform_hypergraph
-
-
-def create_graph(number_of_nodes, cardinality, fraction_of_hyperedges):
-    HG = uniform_hypergraph(
-        n=number_of_nodes,
-        k=cardinality,
-        number_of_edges=int(
-            number_of_nodes *
-            fraction_of_hyperedges))
-
-    return HG
 
 
 def plot_bipartite_graph(G, group_1, group_2):
@@ -91,3 +79,16 @@ def plot_nodes_frequencies(most_common_nodes, title, normed=True):
     plt.title(title)
     plt.show()
     return node_occurrences
+
+
+def is_connected(HG):
+    nodes = HG.nodes()
+    hyper_edges = HG.hyper_edges()
+
+    nodes_in_hyperedges = set()
+    for hyper_edge in hyper_edges:
+        nodes_in_hyperedges |= hyper_edge
+
+    is_every_node_in_edge = not bool(set(nodes) - nodes_in_hyperedges)
+
+    return nx.is_connected(HG) and is_every_node_in_edge

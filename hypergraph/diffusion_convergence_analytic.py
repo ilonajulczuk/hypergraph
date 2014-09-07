@@ -115,6 +115,8 @@ def compare_to_theory(experimental, *theoretical_models):
 def comparing_pipeline(t_max=10000):
     """Generate various hypergraphs, run diffusion and compare models
     """
+
+    # TODO rewrite to use new hypergraph models with differenty created transition matrices
     for n in range(20, 31, 5):
         for k in range(3, 4):
             for f in range(90, 91, 10):

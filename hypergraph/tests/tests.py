@@ -1,10 +1,7 @@
 import nose.tools as nt
-import os
-from IPython.nbformat.current import reads
 
 from hypergraph.markov_diffusion import create_markov_matrix_model_nodes
 import hypergraph.generators as generators
-from hypergraph.notebook_utils import run_notebook
 from hypergraph.diffusion_engine import DiffusionEngine
 
 
@@ -28,22 +25,8 @@ def test_generator():
     nt.assert_equals(number_of_edges, len(hypergraph.hyper_edges()))
 
 
-def test_notebooks():
-    notebooks_path = 'notebooks'
-    paths = os.listdir(notebooks_path)
-    notebooks_filenames = [notebooks_path + '/' + name
-                           for name in paths if name.endswith('.ipynb')]
-
-    for ipynb in notebooks_filenames:
-        print("testing %s" % ipynb)
-        with open(ipynb) as f:
-            nb = reads(f.read(), 'json')
-            run_notebook(nb)
-
-
 def test_diffusion_engine():
     hyper_graph = generators.generic_hypergraph(10, ((3, 2), (4, 3), (5, 3)))
-
     t_max = 1000
     number_of_walkers = 1
     offset = 10

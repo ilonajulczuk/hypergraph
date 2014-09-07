@@ -61,16 +61,11 @@ def compare_outputs(test, ref, skip_compare=('png', 'traceback', 'latex', 'promp
             print("missing key: %s != %s" % (test.keys(), ref.keys()))
             return False
         elif key not in skip_compare and sanitize(test[key]) != sanitize(ref[key]):
-            # print "mismatch %s:" % key
-            # print test[key]
-            # print '  !=  '
-            # print ref[key]
             return False
     return True
 
 
 def run_cell(shell, iopub, cell):
-    # print cell.input
     shell.execute(cell.input)
     # wait for finish, maximum 20s
     shell.get_msg(timeout=20)
@@ -89,7 +84,6 @@ def run_cell(shell, iopub, cell):
             continue
 
         content = msg['content']
-        # print msg_type, content
         out = NotebookNode(output_type=msg_type)
 
         if msg_type == 'stream':
@@ -108,7 +102,7 @@ def run_cell(shell, iopub, cell):
             out.ename = content['ename']
             out.evalue = content['evalue']
             out.traceback = content['traceback']
-        else:
+        elif msg_type not in ('comm_msg', 'comm_open'):
             print("unhandled iopub msg:", msg_type)
 
         outs.append(out)

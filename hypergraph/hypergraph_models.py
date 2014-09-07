@@ -62,12 +62,12 @@ class HyperGraph(nx.Graph):
         edge = set(edge)
         # set up attribute dict
         if attr_dict is None:
-            attr_dict=attr
+            attr_dict = attr
         else:
             try:
                 attr_dict.update(attr)
             except AttributeError:
-                raise nx.NetworkXError(\
+                raise nx.NetworkXError(
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         for node in edge:
@@ -75,7 +75,7 @@ class HyperGraph(nx.Graph):
                 self.adj[node] = {}
                 self.node[node] = {}
             for v in set(edge) - set([node]):
-                datadict=self.adj[node].get(v,{})
+                datadict = self.adj[node].get(v, {})
                 datadict.update(attr_dict)
                 self.adj[node][v] = datadict
                 self.adj[v][node] = datadict
@@ -84,7 +84,6 @@ class HyperGraph(nx.Graph):
             new_edge_index = len(self.hyperedge)
             self.hyperedge.append(set(edge))
             self.hadj[new_edge_index] = {}
-
 
             for i, old_edge in enumerate(self.hyperedge):
                 if i != new_edge_index:
@@ -131,12 +130,12 @@ class HyperGraph(nx.Graph):
         """
         # set up attribute dict
         if attr_dict is None:
-            attr_dict=attr
+            attr_dict = attr
         else:
             try:
                 attr_dict.update(attr)
             except AttributeError:
-                raise nx.NetworkXError(\
+                raise nx.NetworkXError(
                     "The attr_dict argument must be a dictionary.")
         # process ebunch
         for e in ebunch:
