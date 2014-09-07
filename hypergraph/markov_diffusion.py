@@ -39,6 +39,7 @@ def create_markov_matrix(edges, count_itself=False):
 
 
 def populate_node_hyperedges(hyper_graph):
+    """Create a dictionary with nodes V as keys and hyperedges E that E contains V as values"""
     node_hyperedges = defaultdict(list)
     for hyper_edge in hyper_graph.hyper_edges():
         for node in hyper_edge:
@@ -47,17 +48,22 @@ def populate_node_hyperedges(hyper_graph):
 
 
 def create_markov_matrix_model_nodes(hyper_graph):
+
+    # create N x N matrix with zeroes
     number_of_nodes = len(hyper_graph.nodes())
     markov_matrix = np.zeros((number_of_nodes, number_of_nodes))
 
     node_hyper_edges = populate_node_hyperedges(hyper_graph)
 
+    # fill transition matrix with all possible ways to get from V_i to V_j
     for node in hyper_graph.nodes():
         for hyper_edge in node_hyper_edges[node]:
             for node2 in hyper_edge:
                 markov_matrix[node - 1, node2 - 1] += 1 / len(hyper_edge) / len(node_hyper_edges[node])
 
+    # normalize probabilities
     for row in markov_matrix:
+        # avoid dividing by zero
         if abs(np.sum(row)) > 0.0001:
             row /= np.sum(row)
 
