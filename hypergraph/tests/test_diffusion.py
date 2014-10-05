@@ -1,20 +1,9 @@
-import pickle
-import numpy as np
 import nose.tools as nt
 from hypergraph.diffusion_engine import (
-    simulate, next_value, probabilities_to_distribution
+    next_value, probabilities_to_distribution
 )
 
 from collections import Counter
-
-
-def test_alternative_diffusion():
-    markov_matrix = np.array([[0.2, 0.3, 0.5],
-                              [0.1, 0.7, 0.2],
-                              [0.2, 0.4, 0.4]])
-    pickled_markov_matrix = pickle.dumps(markov_matrix)
-    states = simulate(pickled_markov_matrix, 1, 100)
-    nt.assert_equals(1, 2)
 
 
 def test_random_variable():

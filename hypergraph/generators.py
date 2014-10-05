@@ -1,11 +1,17 @@
 import random
 import math
+from scipy.misc import comb
 from hypergraph.hypergraph_models import HyperGraph
 from hypergraph.utils import is_connected
 
 
 def random_combinations(set_of_values, cardinality, count):
     combinations = set()
+    if count > comb(len(set_of_values), cardinality):
+        raise ValueError('There are less that {count} combinations in {set_of_values} of length {cardinality}'.format(
+            count=count, cardinality=cardinality, set_of_values=set_of_values
+        ))
+
     while len(combinations) < count:
         sample = list(set(random.sample(set_of_values, cardinality)))
         sample.sort()
