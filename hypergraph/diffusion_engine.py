@@ -36,6 +36,19 @@ class DiffusionEngine():
             c[state] += 1
         return c.most_common(), all_states_per_iteration
 
+    def simulate_plain(self, t_max):
+        all_states_per_iteration = []
+        all_states = []
+        c = Counter()
+        states = simulate(pickle.dumps(self.markov_matrix),
+                          random.choice(self.available_steps),
+                          t_max)
+        all_states += states
+        all_states_per_iteration.append(states)
+        for state in all_states:
+            c[state] += 1
+        return c.most_common(), all_states_per_iteration
+
     def __str__(self):
         return """DiffusionEngine with transitions: %s""" % self.markov_matrix
 
