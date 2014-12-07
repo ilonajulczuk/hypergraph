@@ -1,5 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/atterothegreatest/hypergraph.png?label=ready&title=Ready)](https://waffle.io/atterothegreatest/hypergraph)
 #Hypergraphs are fun!
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/atteroTheGreatest/hypergraph?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Code is written in python 3.
 
