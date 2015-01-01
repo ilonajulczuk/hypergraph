@@ -18,12 +18,8 @@ def prediction(graph, model="hypergraph", plot_results=False):
     """
 
     computations = {
-        "hypergraph": {
-            "prediction": analytical_hypergraph_diffusion,
-            "title": "Analytical prediction of diffusion on hypergraph",
-        },
         "hypergraph_nodes": {
-            "prediction": analytical_hypergraph_diffusion,
+            "prediction": analytical_hypergraph_nodes,
             "title": "Analytical prediction of diffusion on hypergraph",
         },
         "hypergraph_edges": {
@@ -64,7 +60,7 @@ def analytical_clique_diffusion(graph):
     return xs, ys
 
 
-def analytical_hypergraph_diffusion(hyper_graph):
+def analytical_hypergraph_nodes(hyper_graph):
     """Predict probabilities of being in a node in a hypergraph
 
     Parameters:
@@ -106,4 +102,5 @@ def analytical_hypergraph_edges(hyper_graph):
         all_phis += edge_cardinality
 
     pis = [phi / all_phis for phi in phis]
-    return pis
+    xs = range(len(pis))
+    return xs, pis
