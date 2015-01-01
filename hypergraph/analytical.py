@@ -83,7 +83,7 @@ def analytical_hypergraph_nodes(hyper_graph):
     xs, ys = zip(*c.items())
 
     sum_of_ys = sum(ys)
-    ys = [float(y) / sum_of_ys for y in ys]
+    ys = [y / sum_of_ys for y in ys]
 
     return xs, ys
 
