@@ -23,6 +23,8 @@ def entropy(pis):
 
 
 def compute_states_per_time(HG, t_max, t_per_walker):
+
+    # todo use markov_matrix model nodes instead
     markov_matrix = create_markov_matrix(HG.hyper_edges())
 
     engine = DiffusionEngine(markov_matrix, t_per_walker=t_per_walker)

@@ -74,6 +74,8 @@ def diffusion_on_clique(hypergraph, t_max, plot_results=False):
     nodes = hypergraph.nodes()
     hyper_edges = hypergraph.hyper_edges()
     clique_graph = converters.convert_to_clique_graph(nodes, hyper_edges)
+
+    # TODO change to markov matrix model nodes
     markov_matrix = create_markov_matrix(clique_graph.edges(),
                                          count_itself=False)
     edges = clique_graph.edges()
@@ -128,6 +130,8 @@ def comparing_pipeline(t_max=10000):
                 number_of_nodes = analytical.prediction(HG)
                 number_of_nodes_clique = analytical.prediction(HG,
                                                                model="clique")
+
+                # TODO change to matrix model nodes
                 markov_matrix_loops = create_markov_matrix(HG.hyper_edges(),
                                                            count_itself=True)
                 markov_matrix = create_markov_matrix(HG.hyper_edges(),

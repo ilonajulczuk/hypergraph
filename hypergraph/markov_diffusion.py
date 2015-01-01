@@ -7,6 +7,8 @@ from collections import Counter
 def create_markov_matrix(edges, count_itself=False):
     """Create transition matrix of Markov chain
 
+    DEPRECATED
+
     Parameters:
         edges: collection of edges
         count_itself: flag determining if there should be loops

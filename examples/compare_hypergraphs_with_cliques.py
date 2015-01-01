@@ -6,6 +6,8 @@ from hypergraph.diffusion_engine import DiffusionEngine
 from hypergraph.markov_diffusion import (create_markov_matrix,
                                          count_nodes)
 
+# TODO change create_markov_matrix to create_markov_matrix model node
+
 
 def compare_hypergraph_with_cliques(number_of_nodes,
                                     cardinality, fraction, t_max,
