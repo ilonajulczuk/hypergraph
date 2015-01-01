@@ -61,28 +61,24 @@ def create_markov_matrix_model_nodes(hyper_graph):
             for node2 in hyper_edge:
                 markov_matrix[node - 1, node2 - 1] += 1 / len(hyper_edge) / len(node_hyper_edges[node])
 
-    # normalize probabilities
-    for row in markov_matrix:
-        # avoid dividing by zero
-        if abs(np.sum(row)) > 0.0001:
-            row /= np.sum(row)
-
     return markov_matrix
 
 
 def create_markov_matrix_model_hyper_edges(hyper_graph):
-    node_edges = np.zeros((len(hyper_graph.nodes()), len(hyper_graph.hyper_edges())))
+
+    number_of_edges = len(hyper_graph.hyper_edges())
+    node_edges = np.zeros((len(hyper_graph.nodes()), number_of_edges))
 
     for node in hyper_graph.nodes():
         node_edges[node - 1] = np.array([node in edge for edge in hyper_graph.hyper_edges()])
 
-    number_of_edges = len(hyper_graph.hyper_edges())
     markov_matrix = np.zeros((number_of_edges, number_of_edges))
 
     for i, edge in enumerate(hyper_graph.hyper_edges()):
         for node in edge:
-            for j, contained in enumerate(node_edges[node-1]):
-                markov_matrix[i, j] += contained / len(edge) / sum([edge for edge in node_edges[node - 1] if edge])
+            node_index = node - 1
+            for j, contained in enumerate(node_edges[node_index]):
+                markov_matrix[i, j] += contained / len(edge) / sum([edge for edge in node_edges[node_index] if edge])
 
     return markov_matrix
 
@@ -101,5 +97,3 @@ def count_nodes(nodes, edges, occurrences):
         if node not in c:
             c[node] = 0
     return c
-
-
