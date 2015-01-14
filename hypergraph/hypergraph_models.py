@@ -14,12 +14,6 @@ class HyperGraph(nx.Graph):
     def add_edge(self, edge, attr_dict=None, **attr):
         """Add an hyperedge between nodes.
 
-        The nodes u and v will be automatically added if they are
-        not already in the graph.
-
-        Edge attributes can be specified with keywords or by providing
-        a dictionary with key/value pairs.  See examples below.
-
         Parameters
         ----------
         edge : list of nodes
@@ -80,15 +74,14 @@ class HyperGraph(nx.Graph):
                 self.adj[node][v] = datadict
                 self.adj[v][node] = datadict
 
-        if edge not in self.hyperedge:
-            new_edge_index = len(self.hyperedge)
-            self.hyperedge.append(set(edge))
-            self.hadj[new_edge_index] = {}
+        new_edge_index = len(self.hyperedge)
+        self.hyperedge.append(set(edge))
+        self.hadj[new_edge_index] = {}
 
-            for i, old_edge in enumerate(self.hyperedge):
-                if i != new_edge_index:
-                    self.hadj[i][new_edge_index] = len(edge & old_edge)
-                    self.hadj[new_edge_index][i] = self.hadj[i][new_edge_index]
+        for i, old_edge in enumerate(self.hyperedge):
+            if i != new_edge_index:
+                self.hadj[i][new_edge_index] = len(edge & old_edge)
+                self.hadj[new_edge_index][i] = self.hadj[i][new_edge_index]
 
     def add_edges_from(self, ebunch, attr_dict=None, **attr):
         """Add all the edges in ebunch.
