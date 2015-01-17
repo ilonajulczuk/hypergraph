@@ -1,7 +1,8 @@
+from matplotlib import pyplot as plt
+
 import networkx as nx
 import numpy as np
 from hypergraph import converters
-from matplotlib import pyplot as plt
 
 
 def plot_bipartite_graph(G, group_1, group_2):
@@ -29,6 +30,39 @@ def hypergraph_to_bipartite_parts(G):
     return group_1, group_2
 
 
+def plot_transition_matrix(matrix):
+    conf_arr = matrix
+
+    norm_conf = []
+    for i in conf_arr:
+        a = 0
+        tmp_arr = []
+        a = sum(i, 0)
+        for j in i:
+            tmp_arr.append(float(j) / float(a))
+        norm_conf.append(tmp_arr)
+
+    fig = plt.figure(figsize=(12, 10))
+    plt.clf()
+    ax = fig.add_subplot(111)
+    ax.set_aspect(1)
+    ax.imshow(np.array(norm_conf), cmap=plt.cm.gray,
+              interpolation='nearest')
+
+    width = len(conf_arr)
+    height = len(conf_arr[0])
+
+    for x in range(width):
+        for y in range(height):
+            ax.annotate("%.2f" % (conf_arr[x][y]), xy=(y, x),
+                        horizontalalignment='center',
+                        verticalalignment='center')
+
+    index = range(1, len(matrix) + 1)
+    plt.xticks(range(width), index)
+    plt.yticks(range(height), index)
+
+
 def plot_different_representations(nodes, hyperedges):
     print("Drawing different representations of hypergraph")
 
@@ -47,6 +81,7 @@ def plot_different_representations(nodes, hyperedges):
     clique_graph = converters.convert_to_clique_graph(nodes, hyperedges)
     plt.figure()
     nx.draw(clique_graph)
+
 
 
 def plot_hyperedges_frequencies(most_common, hyperedges, title, normed=True):

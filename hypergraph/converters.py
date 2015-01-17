@@ -1,5 +1,6 @@
 import networkx as nx
 import itertools
+import pykov
 
 
 def convert_to_nx_bipartite_graph(nodes, hyper_edges):
@@ -62,3 +63,10 @@ def convert_to_clique_graph(nodes, hyper_edges):
     return graph
 
 
+def transition_matrix_to_pykov_chain(matrix):
+    chain = pykov.Chain()
+
+    for i, row in enumerate(matrix):
+        for j, column in enumerate(row):
+            chain[(i, j)] = column
+    return chain

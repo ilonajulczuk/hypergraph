@@ -40,7 +40,7 @@ def compute_states_per_time(HG, t_max, t_per_walker):
 def entropy_value(states, nodes, edges):
     """Compute entropy values from states, nodes and edges.
 
-    It recomputes edge occurrences to node occurences.
+    It recomputes edge occurrences to node occurrences.
     It's too much coupled with bipartite model.
     #TODO - decouple it
 
